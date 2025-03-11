@@ -25,7 +25,7 @@ class ListPage extends StatelessWidget {
 }
 
 class _ListPage extends StatefulWidget {
-  const _ListPage({super.key});
+  const _ListPage();
 
   @override
   State<_ListPage> createState() => _listPageState();
@@ -103,7 +103,12 @@ class _listPageState extends State<_ListPage> {
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          // TODO: 수정 폼으로 이동
+                          //  수정 폼으로 이동
+                          Navigator.pushNamed(
+                            context,
+                            "/edit",
+                            arguments: {"id": snapshot.data![index].id},
+                          );
                         },
                       ),
                       IconButton(
@@ -135,7 +140,7 @@ class _listPageState extends State<_ListPage> {
   Future<List<TodoItemVo>> getTodoList() async {
     try {
       //  요청
-      var dio = new Dio(); // Dio 인스턴스
+      var dio = Dio(); // Dio 인스턴스
       //  헤더 설정: 데이터를 Json 형식으로 주고 받겠다는 약속
       dio.options.headers['Content-Type'] = "application/json";
       //  서버로 목록 요청
