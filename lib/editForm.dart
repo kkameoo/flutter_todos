@@ -60,9 +60,21 @@ class _EditFormState extends State<_EditForm> {
                 ),
               ),
             ),
-            Checkbox(value: _completed, onChanged: (value) {}),
+            Checkbox(
+              value: _completed,
+              onChanged: (value) {
+                setState(() {
+                  _completed = value ?? false;
+                });
+              },
+            ),
             SizedBox(
-              child: ElevatedButton(onPressed: () {}, child: Text("수정")),
+              child: ElevatedButton(
+                onPressed: () {
+                  updateTodo();
+                },
+                child: Text("수정"),
+              ),
             ),
           ],
         ),
@@ -91,4 +103,24 @@ class _EditFormState extends State<_EditForm> {
   }
 
   // 변경된 TodoItem을 서버로 반영하는 통신 함수
+  updateTodo() async {
+    try {
+      var dio = Dio();
+      dio.options.headers['Content-Type'] = 'application/json';
+      // 서버로 변경됨 할 일을 전송 (PUT)
+      final response = await dio.put(
+        "$apiEndpoint/$_todoId",
+        data: {"title": _titleController.text, "completed": _completed},
+      );
+
+      if (response.statusCode == 200) {
+        // Navigator.pop(context);
+        Navigator.pushNamed(context, "/");
+      } else {
+        throw Exception("API 서버 오류입니다.");
+      }
+    } catch (e) {
+      throw Exception("할 일을 수정하지 못했습니다.:$e");
+    }
+  }
 }
